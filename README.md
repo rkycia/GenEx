@@ -1,15 +1,17 @@
 Program name:  "GenEx" Generator
 
 Warnings: 
-1. This is develop verison, so if you find any errors/problems do not hesitate to write.
-2. The programs were written by means of high standards, however, authors are not responsible for any damages that result from the use of these program. Use it at your own risk.
+
+1. This is development verison, so if you find any errors/problems do not hesitate to write.
+
+2. The program was written by means of high standards, however, the authors are not responsible for any damages that result from the use of this program. Use it at your own risk.
 
 
 
 Authors:
 
 Radoslaw Kycia
-rkycia@pk.edu.pl
+rkycia@pk.edu.pl                       
 Cracow University of Technology
 Krakow, Poland
 
@@ -73,35 +75,35 @@ Warnings:
 
 Commands
 
-- To compile and run type:  \b make \b all 
+- To compile and run type: make all 
   
   Executable is in ./bin directory
 
-- To compile and run type:  \b make \b run
+- To compile and run type: make run
 
-- To run example test type:  \b make \b test
+- To run example test type: make test
   
   Restoring oryginal Generator.dat (with comments) is by selection 0 option.
 
-- To restore folder to original state type: \b make \b clean
+- To restore folder to original state type: make clean
 
-- To count lines of the program type:  \b make \b line_count
+- To count lines of the program type: make line_count
 
-- To generate Doxygen documentation [9] type: \b make \b Generate-doc
+- To generate Doxygen documentation [9] type: make Generate-doc
 
 
 Directory structure:
 
- - \b ./ - main directory contains Makefile, configuration file \b Generator.dat and scripts that perform various operations.
- - \b /bin - contains main.x generator program appears after compilation. It is wiped by \b make \b clean command.
- - \b /include - contains header files.
- - \b /src - contains source files and the main generator file \b main.cxx
- - \b /build - is temporary directory for building. It is created by main run command and deleted with all the content by \b make \b clean command.
- - \b /EVENTS - contains files with saved events form the run.
- - \b /MODEL_DATA - contains configuration (text) files for different models (e.g. matrix elements) used in generation.
- - \b /ACCEPTANCE_CUTS - contains files with cuts.
- - \b /Tests - contains sorted generator configuration files sortedConfigLog.log which are used in the second mode of generator running \b make \b test 
+ - ./ - main directory contains Makefile, configuration file Generator.dat and scripts that perform various operations.
+ - /bin - contains main.x generator program appears after compilation. It is wiped by make clean command.
+ - /include - contains header files.
+ - /src - contains source files and the main generator file \b main.cxx
+ - /build - is temporary directory for building. It is created by main run command and deleted with all the content by make clean command.
+ - /EVENTS - contains files with saved events form the run.
+ - /MODEL_DATA - contains configuration (text) files for different models (e.g. matrix elements) used in generation.
+ - /ACCEPTANCE_CUTS - contains files with cuts.
+ - /Tests - contains sorted generator configuration files sortedConfigLog.log which are used in the second mode of generator running make test 
 
 Setup:
 
-The main configuration file is \b Generator.dat. It is heavily commented.
+The main configuration file is Generator.dat. It is heavily commented.
