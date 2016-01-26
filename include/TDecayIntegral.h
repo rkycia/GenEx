@@ -36,7 +36,9 @@
 
 #include "TIntegral.h"
 #include "TDecay.h"
-#include "TInterpolationTable.h"
+#include "TGraph.h"
+#include "TSpline.h"
+
 
 ////////////////////////////////////////////////////////////////////////
 using namespace std;
@@ -64,7 +66,7 @@ private:
     queue<double> rndQueue;
     
     ///Interpolation class
-    TInterpolationTable * interpolation;
+    TSpline3 * interpolation;
     
     ///Maximal range of decaying mass
     double M_max;

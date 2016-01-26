@@ -20,7 +20,7 @@ TDecayIntegral::TDecayIntegral( double Mmax) : _bInitialized( false ), M_max( Mm
 	rndGen 	 = new TRandom3();
 	integral = new TIntegral();
 	decay 	 = new TDecay();
-	interpolation = new TInterpolationTable();	
+	interpolation = 0;	
 	
 };
 
@@ -30,14 +30,22 @@ TDecayIntegral::~TDecayIntegral()
 	delete rndGen;
 	delete integral;
 	delete decay;
-	delete interpolation;
-	
+	if( interpolation != 0 )
+	{
+		delete interpolation;
+	}
 };
 
 ////////////////////////////////////////////////////////////////////////
 double TDecayIntegral::getDecayIntegral( double M )
 {
-    double integral = interpolation->Interpolate( M ); 
+	if( interpolation == 0 )
+	{
+			cout << "ERROR TDecayIntegral::getDecayIntegral - interpolation not initialized " << endl;
+			throw string("ERROR TDecayIntegral::getDecayIntegral - interpolation not initialized ");
+	}
+	
+    double integral = interpolation->Eval( M ); 
     
     return integral;
 };
@@ -53,7 +61,7 @@ void TDecayIntegral::Init( double * mass, int * PDGcode, int N, int NEvents )
 		M_min += mass[i];
 	}
 	//small shift above threshold
-	M_min += numeric_limits<double>::epsilon(); 
+	M_min += numeric_limits<double>::epsilon()+ 1e-11; 
 
 	assert( M_max > M_min );
 	
@@ -93,11 +101,21 @@ void TDecayIntegral::Init( double * mass, int * PDGcode, int N, int NEvents )
 		
 			//fill integral for the bin
 			integral->AddWeigt( wtdecay );
+			
+			////clear queue - in case there was error in previous run
+			while (!rndQueue.empty())
+			{
+				rndQueue.pop();
+			}
+			
 		}
 		
 		//fill tables of nodes
 		x[ bins ]  = M;
 		y[ bins ]  = integral->GetIntegral();
+		
+		//cout << "M= " << M << endl;
+		//cout << "FILLED with integral = " << integral->GetIntegral() << endl;
 		
 		//Clear integral for another bin
 		integral->Clear();
@@ -105,8 +123,10 @@ void TDecayIntegral::Init( double * mass, int * PDGcode, int N, int NEvents )
 	}	
 	
 	//set up nodes
-	interpolation->SetNodes( x, y, Nbins + 1 );
-	
+	 TGraph * gr = new TGraph( Nbins + 1,x,y);
+	interpolation = new TSpline3("interpolation",gr);
+	delete gr;	
+		
 		
 	_bInitialized = true;
 	
@@ -184,7 +204,9 @@ void TDecayIntegral::InitError( double * mass, int * PDGcode, int N, double rela
 	}	
 	
 	//set up nodes
-	interpolation->SetNodes( x, y, Nbins + 1 );
+	TGraph * gr = new TGraph( Nbins + 1,x,y);
+	interpolation = new TSpline3("interpolation",gr);
+	delete gr;	
 	
 		
 	_bInitialized = true;
