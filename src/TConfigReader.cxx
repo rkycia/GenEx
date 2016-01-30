@@ -19,7 +19,7 @@ Simple class that reads config file into map (key, value).
 
 ////////////////////////////////////////////////////////////////////////
 bool TConfigReader::IsKey( const std::string& s ) const
-{
+{		
 	return count( s ) != 0;
 };
       
@@ -28,6 +28,7 @@ int TConfigReader::GetIntValue( const std::string& key )
 {
 	if (!IsKey( key ))
 	{
+		std::cerr << "TConfigReader:: NO such key: " << key << std::endl;
 		throw 0;
 	}	
 	std::istringstream ss( this->operator [] ( key ) );
@@ -43,6 +44,7 @@ float TConfigReader::GetFloatValue( const std::string& key )
 {
 	if (!IsKey( key )) 
 	{
+		std::cerr << "TConfigReader:: NO such key: " << key << std::endl;
 		throw 1.0f;
 	}	
 	std::istringstream ss( this->operator [] ( key ) );
@@ -57,6 +59,7 @@ double TConfigReader::GetDoubleValue( const std::string& key )
 {
 	if (!IsKey( key )) 
 	{
+		std::cerr << "TConfigReader:: NO such key: " << key << std::endl;
 		throw 1.0;
 	}	
 	std::istringstream ss( this->operator [] ( key ) );
@@ -71,6 +74,7 @@ long double TConfigReader::GetLongDoubleValue( const std::string& key )
 {
 	if (!IsKey( key )) 
 	{
+		std::cerr << "TConfigReader:: NO such key: " << key << std::endl;
 		throw 1.0l;
 	}	
 	std::istringstream ss( this->operator [] ( key ) );
@@ -85,6 +89,7 @@ std::complex<double> TConfigReader::GetComplexDoubleValue( const std::string& ke
 {
 	if (!IsKey( key )) 
 	{
+		std::cerr << "TConfigReader:: NO such key: " << key << std::endl;
 		throw std::complex<double>(0.0, 0.0);
 	}	
 	std::istringstream ss( this->operator [] ( key ) );
@@ -107,6 +112,7 @@ bool TConfigReader::GetBoolValue( const std::string& key )
 {
 	if (!IsKey( key )) 
 	{
+		std::cerr << "TConfigReader:: NO such key: " << key << std::endl;
 		throw true;
 	}	
 	std::istringstream ss( this->operator [] ( key ) );
@@ -121,6 +127,7 @@ std::string TConfigReader::GetStringValue( const std::string& key )
 {
 	if (!IsKey( key )) 
 	{
+		std::cerr << "TConfigReader:: NO such key: " << key << std::endl;
 		throw std::string("a");
 	}	
 	std::istringstream ss( this->operator [] ( key ) );
