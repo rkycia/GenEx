@@ -1,0 +1,10 @@
+*~
+*.x
+*.root
+*.ps
+*.lhe
+*.txt
+*.log
+*.o
+*.core
+
