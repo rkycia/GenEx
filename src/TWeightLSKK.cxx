@@ -80,6 +80,8 @@ void TWeightLSKK::ReadConfigFile( const string & filename )
 	LambdaInt = ConfigReader->GetDoubleValue( "LambdaInt" );
 	alphaKPrim = ConfigReader->GetDoubleValue( "alphaKPrim" );
 	
+	scalingFactor = ConfigReader->GetDoubleValue( "scalingFactor" );
+	
 	//Parse remaining data from generator
 	nop = ConfigReader->GetIntValue( "nop" );
 	tecm =  ConfigReader->GetDoubleValue( "tecm" );
@@ -138,6 +140,8 @@ void TWeightLSKK::ReadConfigFile( const string & filename )
 	ConfigLogger->Write() << "Lambda2 = " << Lambda2 << endl;
 	ConfigLogger->Write() << "LambdaInt = " << LambdaInt << endl;
 	ConfigLogger->Write() << "alphaKPrim = " << alphaKPrim << endl;
+	
+	ConfigLogger->Write() << "scalingFactor = " << scalingFactor << endl;
 	
 	delete ConfigLogger;
 
@@ -371,6 +375,13 @@ double TWeightLSKK::GetWeight( TEvent * event, double eventWeight )
 	
 	Kinematics2to4( event );
 	double weight = GetWeight( eventWeight );
+	
+	//correct weight to GeV^-2
+	double gev2tomb = 0.3894;
+	weight *= pow(gev2tomb,-4);
+	
+	//scale by the user factor
+	weight *= scalingFactor;
 	
 	return( weight );
 

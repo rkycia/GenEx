@@ -5,5 +5,40 @@
 #nop = 3
 
 #testing eventGenerationStrategy = 2
+#nip = 2
+#nop = 4
+
+#testing eventGenerationStrategy = 5
+#nip = 2
+#nop = 6
+
+#testing eventGenerationStrategy = 8
+#nip = 2
+#nop = 2
+
+#testing eventGenerationStrategy = 11
+#nip = 2
+#nop = 3
+
+#testing eventGenerationStrategy = 13
+#nip = 2
+#nop = 5
+
+#testing eventGenerationStrategy = 14
+#nip = 2
+#nop = 6
+
+#testing eventGenerationStrategy = 15
+#nip = 2
+#nop = 6
+#nop = 4
+
+#testing eventGenerationStrategy = 18
 nip = 2
-nop = 4
+nop = 6
+
+
+
+
+#scaling factor of weight, e.g., GeV^-2 to mb (0.3894)
+scalingFactor = 1.0

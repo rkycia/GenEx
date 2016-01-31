@@ -40,7 +40,21 @@ void TWeightUnit::ReadConfigFile( const string & filename )
 
 	
 	//Parse variables: setting up model variables	
-	//nothing to do
+	scalingFactor = ConfigReader->GetDoubleValue( "scalingFactor" );
+	
+	//Log configuration
+	string ConfigLog = ConfigReader->GetStringValue( string("ConfigLogFile") );
+	TLog * ConfigLogger = new TLog();
+	ConfigLogger->setLogTime( false );
+	ConfigLogger->openLogFile( ConfigLog );
+
+	ConfigLogger->Write() << "# " << "-----------" << endl;
+	ConfigLogger->Write() << "# " << "TWeightUnit" << endl;
+	ConfigLogger->Write() << "# " << "-----------" << endl;
+	
+	ConfigLogger->Write() << "scalingFactor = " << scalingFactor << endl;
+
+	delete ConfigLogger;
 	
 	return;
 };
@@ -93,6 +107,12 @@ double TWeightUnit::GetWeight( TEvent * event, double eventWeight )
 double TWeightUnit::GetWeight( double eventWeight )
 {
 	double wt = eventWeight;
+
+	//scale to GeV^-2 - no needed. One can imagine that the [ME]=GeV^{n-2}
+
+
+	//scale by the user factor
+	wt *= scalingFactor;
 
 	double wtf = 1.0*wt;
 	

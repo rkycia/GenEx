@@ -6,12 +6,12 @@
 #number of incoming particles
 #nip = 2
 
+#scaling factor of weight, e.g., GeV^-2 to mb (0.3894)
+scalingFactor = 0.3894   #RESULT WILL BE IN mbarn
 
 ###Model parametres (Matrix element)
 
 #regge intercept
-#rintc0 = 1.088
-
 rintc0 = 1.0808
 rintc1 = 0.5479
 rintc2 = 0.5479

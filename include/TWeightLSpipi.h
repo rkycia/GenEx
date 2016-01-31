@@ -91,14 +91,8 @@ class TWeightLSpipi: public TWeightStrategy
     
     double Beff;
     
-    // GeV
+    /// GeV**2
     double Lambda2;
-    
-    /// acceptance cut
-    double ypicut;
-    
-    /// acceptance cut
-    double dzcut;
 
     /// Pi = 3.14...
     static const double PI;    
@@ -125,6 +119,9 @@ class TWeightLSpipi: public TWeightStrategy
     
     /// total energy in CM 
     double tecm ;		
+   
+	/// user scaling factor
+	double scalingFactor;
    
     /// final particles four-vectors
     TLorentzVector * pf;

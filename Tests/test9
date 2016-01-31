@@ -73,3 +73,4 @@ seed  = 4357
 sigma_tot  = 102.722
 tecm  = 7000
 weightStrategy  = 1
+scalingFactor = 0.3894

@@ -69,12 +69,6 @@ private:
     
     ///Norm of the Gauss
     double norm;
-      
-    /// acceptance cut
-    double ypicut;
-    
-    /// acceptance cut
-    double dzcut;
 
     /// Pi = 3.14...
     static const double PI;    
@@ -98,6 +92,9 @@ private:
     
     /// number of outgoing particles (2 protons + ( nop-2 ) pions)
     int nop;
+    
+	/// user scaling factor
+	double scalingFactor;    
     
     /// final particles four-vectors
     TLorentzVector * pf;

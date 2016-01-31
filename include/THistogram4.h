@@ -152,6 +152,19 @@ private:
 	///diffferential cross-section histograms
 	TH1F *XHOGENE[30];
 	
+	///amount of x-section histograms
+	int nXsection;
+	
+	///store number of histograms from HOGENE for x-section
+	int * arrayXsection;
+	
+	///helper function that from histogram makes cross section one
+	/// @param xsection  numerical value of cross section for given histogram
+	/// @param histogram histogram that will be converted to cross section in the form varaible vs events
+	/// @returns pointer to the cross section histogram
+	TH1F * makeXSectionHistogram( double xsection, TH1F * histogram );
+	
+	
 	///Postscript filename for histograms
 	string PsFilename;
 	

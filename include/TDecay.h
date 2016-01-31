@@ -6,6 +6,7 @@
 2. Weight is equal to Lorentz invariant phase space factor corresponding to 
 \f$<p'|p>=(2\pi)^3*2E*\delta(p-p')\f$ state normalization
 H.Pilkhun, The Interactions of Hadrons North-Holland 1967,p.16
+3. Result is multiplied by additional 1/PI factor.
 
 ***********************************************************************/   
 
@@ -20,6 +21,7 @@ H.Pilkhun, The Interactions of Hadrons North-Holland 1967,p.16
 	1. Generate() takes random numbers from the queue, not from gRandom.
 	2. Weight is equal to Lorentz invariant phase space factor corresponding to \f$<p'|p>=(2\pi)^3*2E*\delta(p-p')\f$ state normalization
 		H.Pilkhun, The Interactions of Hadrons North-Holland 1967,p.16
+	3. Result is multiplied by additional 1/PI factor.
 
 */
 

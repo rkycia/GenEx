@@ -276,7 +276,7 @@ int TEventMaker2to4::CalculateKinematics(double p1t, double p2t, double phi1, do
 
     //transverse mass
     double am1t2 = sq(mass[1]) + sq(p1t);
-    double am2t2 = sq(mass[1]) + sq(p2t);
+    double am2t2 = sq(mass[2]) + sq(p2t);
 
     //construct energies
     pp10[0] = sqrt(am1t2+sq(pp1z[0]));
@@ -319,8 +319,15 @@ int TEventMaker2to4::CalculateKinematics(double p1t, double p2t, double phi1, do
     TLorentzVector p0b_1 = pb1 - p1 - p4;
     TLorentzVector p0b_2 = pb2 - p2 - p3;
 
+	//check peripherality
+	/*	
+	if( p1.Z() < 0.0 || p2.Z() > 0.0)
+	{
+		return 8;
+	}
+	*/ 
 
-    //set fourvectors - setting reflection of particles or going along initial directions
+    //set fourvectors
 
 	pf[1]=p1;
 	pf[2]=p2;
@@ -355,10 +362,9 @@ double TEventMaker2to4::SetEvent( int nDim, double *Xarg, TEvent * event )
 	//generate weight of event
 	
 	double flux = 2.0*tecm*tecm;
-    double gev2tomb = 0.3894;
 	double norm = pow( 2.0 * PI, -8 );
 	
-	double wt = norm*pow(gev2tomb,-3)/flux;
+	double wt = norm/flux;
 	
 	
 	if ( false == generationFailed )

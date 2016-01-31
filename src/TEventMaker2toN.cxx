@@ -203,7 +203,7 @@ void TEventMaker2toN::ReadConfigFile( const string & filename )
 	
 	
 	ConfigLogger->Write() << "TEventMaker2toN::massIndication = " << massIndication << endl;
-	for( int i = 1; i < 5; i++ )
+	for( int i = 1; i < nop+1; i++ )
 	{
 			ConfigLogger->Write() <<  "TEventMaker2toN::id" << i << " = " << idOut[i] << endl;
 			ConfigLogger->Write() <<  "TEventMaker2toN::m" << i << " = " << mass[i] << endl;
@@ -229,7 +229,8 @@ void TEventMaker2toN::Initialize()
 	if( bIDecay != 0)
 	{
 		Logger->Write( logINFO ) << "Initialize TDecayIntegral..." << endl;
-		DecayIntegral = new TDecayIntegral();
+		DecayIntegral = new TDecayIntegral(  );
+		//DecayIntegral = new TDecayIntegral( tecm ); //maximal interpolation range bound is tecm
 		DecayIntegral->Init( mass+3, idOut+3, nop-2);
 		Logger->Write( logINFO ) << "..Initialize TDecayIntegral DONE" << endl;
 	}
@@ -399,7 +400,9 @@ int TEventMaker2toN::CalculateKinematics(double p1t, double p2t, double dphi1, d
   
   if( decayOption == 1 )
   {
-    
+
+    PM = p3;
+        
     Decay->SetDecay(p3, nop-2, mass+3);
 	
 	wtdecay = Decay->Generate( rndQueue );
@@ -411,9 +414,7 @@ int TEventMaker2toN::CalculateKinematics(double p1t, double p2t, double dphi1, d
     {
 		pf[i] = *(Decay->GetDecay( i-3 ));
 	}
-    
-    PM = p3;
-   
+       
  }
  else if( decayOption == 2 )
  {
@@ -442,19 +443,19 @@ int TEventMaker2toN::CalculateKinematics(double p1t, double p2t, double dphi1, d
 	TLorentzVector pf5 = pf[3]+pf[4];
 	wtdecay = kcms(pf5.M2(), mass[3], mass[4])/pf5.M()*M_PI;
 		
-    //set fourvectors - setting reflection of particles or going along initial directions
-        
-    if( pb1.Z()*p1.Z() > 0 )
-	{
-		pf[1]=p1;
-		pf[2]=p2;
-	}
-	else
-	{
-		pf[1]=p2;
-		pf[2]=p1;
-	}
+    //set fourvectors    
     
+    //check peripherality
+	/*
+	
+	if( p1.Z() < 0.0 || p2.Z() > 0.0)
+	{
+		return 8;
+	}
+    */
+   	pf[1]=p1;
+	pf[2]=p2;
+
 	 
  }  
    
@@ -490,10 +491,22 @@ double TEventMaker2toN::SetEvent( int nDim, double *Xarg, TEvent * event )
 		event->pfInfo[i] = PDGDatabese->GetParticle( idOut[i] );
     }
 
+	//save decay integral for Central Mass in event
+	if( bIDecay != 0 && generationFailed == false )
+	{
+		event->decaywtIntN = DecayIntegral->getDecayIntegral( PM.M() );
+		
+		//cout << "Integral = " << event->decaywtIntN << endl;
+	}
+	else
+	{
+		event->decaywtIntN = 0.0;
+	}
+
 	
 	
 	//generate weight 
-	double norm3=pow( 2.0 * PI, -3*nop + 4 )*pow(2,-3);
+	double norm3=pow( 2.0 * PI, -3*3 + 4 )*pow(2,-3);
   
 	double wt = 0.0;
 	
@@ -508,13 +521,14 @@ double TEventMaker2toN::SetEvent( int nDim, double *Xarg, TEvent * event )
          double jacob3 = jacob_rndm_3/jacobinv_phs;
 
 		 double flux = 2.0*tecm*tecm;
-		 double gev2tomb = 0.3894;
-		 wt = pow(gev2tomb,-3)/flux;
+		 
+		 wt = 1.0/flux;
 				
 	     double wt3 = wt * norm3 * jacob3 * pf[1].Pt() * pf[2].Pt()/pf[1].E()/pf[2].E();
 	     
 		 wt = wt3;
 		 
+		 //multiply by the decay weight
 		 wt *= wtdecay;
 	 
 	}

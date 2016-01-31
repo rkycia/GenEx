@@ -48,3 +48,4 @@ readConfigLog  = 1
 seed  = 4357
 tecm  = 200
 weightStrategy  = 4
+scalingFactor = 1.0

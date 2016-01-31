@@ -112,7 +112,7 @@ private:
     /// beam 1 && 2 fourvectors 
     TLorentzVector pb1,pb2;
     
-        /// number of outgoing particles (2 protons + ( nop-2 ) pions)   	       
+    /// number of outgoing particles (2 protons + ( nop-2 ) pions)   	       
     int nop;
     /// store masses of particles corresponding to pcm properties;
     double * mass;

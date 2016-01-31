@@ -443,10 +443,9 @@ double TEventMakerCylindricalPhaseSpace::SetEvent( int nDim, double *Xarg, TEven
 	
 	//generate weight of Cylindrical Phase Space
 	double flux = 2.0*tecm*tecm;
-    double gev2tomb = 0.3894;
 	double norm = pow( 2.0 * PI, -3*nop+4 );
 	
-	double wt = norm*pow(gev2tomb,-3)/flux;
+	double wt = norm/flux;
 	
 	
 	if ( false == generationFailed )

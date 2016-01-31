@@ -301,6 +301,7 @@ int Generator::Generate(void )
 			cout<< endl;
 		#endif   
       
+		event->eventWeight = MCwt;
       
 		Histogram->Fill( event, MCwt );
 		

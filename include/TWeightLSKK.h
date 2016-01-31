@@ -143,7 +143,10 @@ private:
     int nop;
     
     /// total energy in CM 
-    double tecm ;		
+    double tecm ;
+    
+    /// user scaling factor
+	double scalingFactor;		
 
     /// final particles four-vectors
     TLorentzVector * pf;

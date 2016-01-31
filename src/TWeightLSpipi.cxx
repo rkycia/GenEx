@@ -72,6 +72,8 @@ void TWeightLSpipi::ReadConfigFile( const string & filename )
 	Beff = ConfigReader->GetDoubleValue( "Beff" );
 	Lambda2 = ConfigReader->GetDoubleValue( "Lambda2" );
 	
+	scalingFactor = ConfigReader->GetDoubleValue( "scalingFactor" );
+	
 	//Parse remaining data from generator
 	nop = ConfigReader->GetIntValue( "nop" );
 	tecm =  ConfigReader->GetDoubleValue( "tecm" );
@@ -119,6 +121,7 @@ void TWeightLSpipi::ReadConfigFile( const string & filename )
 	ConfigLogger->Write() << "B_elastic = " << B_elastic << endl;
 	ConfigLogger->Write() << "Beff = " << Beff << endl;
 	ConfigLogger->Write() << "Lambda2 = " << Lambda2 << endl;
+	ConfigLogger->Write() << "scalingFactor = " << scalingFactor << endl;
 
 	delete ConfigLogger;
 
@@ -305,6 +308,13 @@ double TWeightLSpipi::GetWeight( TEvent * event, double eventWeight )
 	
 	Kinematics2to4( event );
 	double weight = GetWeight( eventWeight );
+	
+	//correct weight to GeV^-2
+	double gev2tomb = 0.3894;
+	weight *= pow(gev2tomb,-4);
+	
+	//scale by the user factor
+	weight *= scalingFactor;
 	
 	return( weight );
 

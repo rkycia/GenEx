@@ -7,3 +7,6 @@
 GaussPt::Alpha = 1.0
 GaussPt::Norm = 1.0
 
+
+#scaling factor of weight, e.g., GeV^-2 to mb (0.3894)
+scalingFactor = 1.0

@@ -29,12 +29,23 @@ THistogram4::THistogram4() : xsectionHistogramsCreated(false)
 	azim  = new double [nop+1];
 	theta = new double [nop+1];
 	pt    = new double [nop+1];
-	prap  = new double [nop+1];
-	
+	prap  = new double [nop+1];	
 	
 	Nevents = 0;
 	
 	AllocateHistograms();
+	
+	//set histograms to make x-section
+	nXsection = 8;
+	arrayXsection = new int [nXsection];
+	arrayXsection[0] = 5;
+	arrayXsection[1] = 6;
+	arrayXsection[2] = 7;
+	arrayXsection[3] = 8;
+	arrayXsection[4] = 9;
+	arrayXsection[5] = 14;
+	arrayXsection[6] = 15;
+	arrayXsection[7] = 16;
 	
 	
 };
@@ -55,9 +66,11 @@ THistogram4::~THistogram4()
 	//if differential cross-section histograms were created
 	if( xsectionHistogramsCreated == true )
 	{
-		for( int i = 0; i < 17; i++)
+		for( int i = 0; i < nXsection; i++ )
 			delete XHOGENE[i];
 	}
+	
+	delete [] arrayXsection;
 	
 	
 };
@@ -277,39 +290,21 @@ void THistogram4::WriteHistograms( double xsection )
      //write x-section histograms
        ps->NewPage();
        c22->cd(1);
-       XHOGENE[0]->Draw();
+       XHOGENE[0]->Draw("E");
        c22->cd(2);
-       XHOGENE[1]->Draw();
+       XHOGENE[1]->Draw("E");
        c22->cd(3);
-       XHOGENE[2]->Draw();
+       XHOGENE[2]->Draw("E");
        c22->cd(4);
-       XHOGENE[3]->Draw();
+       XHOGENE[3]->Draw("E");
 	   c22->Update();
 	   ps->NewPage();
        c22->cd(1);
-       XHOGENE[6]->Draw();
+       XHOGENE[6]->Draw("E");
        c22->cd(2);
-       XHOGENE[7]->Draw();
-       c22->cd(3);
-       XHOGENE[8]->Draw();
-       c22->cd(4);
-       XHOGENE[9]->Draw();
+       XHOGENE[7]->Draw("E"); 
        c22->Update();
-       ps->NewPage();
-       c22->cd(1);
-       XHOGENE[4]->Draw();
-       c22->cd(2);
-       XHOGENE[5]->Draw();
-       c22->cd(3);
-       XHOGENE[14]->Draw();
-       c22->cd(4);
-       XHOGENE[15]->Draw();
-       c22->Update();
-     
-       ps->NewPage();
-       c22->cd(1);
-       XHOGENE[16]->Draw();
-       c22->Update();
+ 
      
      
      ps->Close();
@@ -330,7 +325,7 @@ void THistogram4::WriteHistograms( double xsection )
      
      hEtaPhi->Write();
      
-    for( int i = 0; i < 17; i++ )  
+    for( int i = 0; i < nXsection; i++ )  
 		XHOGENE[ i ] -> Write();
      
      tf->Write();
@@ -461,176 +456,100 @@ double THistogram4::fdelta(double dazim)
 };
 
 ////////////////////////////////////////////////////////////////////////
+TH1F * THistogram4::makeXSectionHistogram( double xsection, TH1F * histogram )
+{
+	
+	//helper variables 
+	double binWidth = 0.0;
+	
+	
+	
+	TH1F * tmpHist = (TH1F*) histogram->Clone();
+	//tmpHist->Reset("ICESM");
+	tmpHist->GetSumw2()->Set(0);
+	//tmpHist->Sumw2();
+		
+	
+	tmpHist->Scale( 1.0/double( Nevents ) );
+	tmpHist->Scale( xsection );
+		
+	int nbinsx = tmpHist->GetNbinsX();
+	
+	double xMin = tmpHist->GetXaxis()->GetXmin();
+	double xMax = tmpHist->GetXaxis()->GetXmax();
+	
+	tmpHist->Scale( 1.0 / ( abs(xMax - xMin) / double( nbinsx ) ) );
+
+	
+	//setup proviso OY axis label and title
+	tmpHist->GetYaxis()->SetTitle("#frac{d#sigma}{d#variable}");
+	tmpHist->SetTitle("xsection histogram (adjust labels)");
+		
+	return( tmpHist );
+	
+	
+	
+};
+
+
+////////////////////////////////////////////////////////////////////////
 void THistogram4::CreateXSectionHistograms( double xsection )
 {
 	
 	//if differential cross-section histograms were created
 	if( xsectionHistogramsCreated == true )
 	{
-		for( int i = 0; i < 17; i++ )
-			delete XHOGENE[i];
-	}
 	
+		for( int i = 0; i < nXsection; i++ )
+		{	
+			delete XHOGENE[ i ];
+		}
+	} 	
 	
 	xsectionHistogramsCreated = true;
-			
-	double binWidth = 0.0;
-	double x = 0.0;
-	double val = 0.0;
+		
 	
-	double tmp = 0.0;
-	
-	//beginning part not modified
-	for( int i = 0; i < 5; i++ )
+	for( int i = 0; i < nXsection; i++ )
 	{
-		
-		TH1F * tmpHist = (TH1F*) HOGENE[i]->Clone();
-		TH1F * tmpHist2 = (TH1F*) HOGENE[i]->Clone();
-		tmpHist->Reset("ice");
-		tmpHist->GetSumw2()->Set(0);
-		//tmpHist->Sumw2();
-		
-		int nbinsx = tmpHist2->GetNbinsX();
-		
-		for( int j = 1; j < nbinsx; j++ )
-		{
-		
-			x = tmpHist2->GetBinCenter( j );
-			binWidth = tmpHist->GetXaxis()->GetBinWidth( tmpHist->GetXaxis()->FindBin( x ) );
 			
-			val = tmpHist2->GetBinContent( j );
-			
-			tmp = val/( binWidth );
-			
-			tmpHist->Fill( x, tmp );
+		XHOGENE[ i ] = makeXSectionHistogram( xsection, HOGENE[ arrayXsection[i] ]);
 	
-		}
-		
-		XHOGENE[i] = tmpHist;
-	}
+	} 	
 	
+	//adjust axis labels
 	
-	
-	//first set of plots
-	for( int i = 5; i < 10; i++)
-	{
-		
-		TH1F * tmpHist = (TH1F*) HOGENE[i]->Clone();
-		TH1F * tmpHist2 = (TH1F*) HOGENE[i]->Clone();
-		tmpHist->Reset("ice");
-		tmpHist->GetSumw2()->Set(0);
-		//tmpHist->Sumw2();
-		
-		//multiply by luminosity
-		tmpHist2->Scale( 1.0/double( Nevents ) );
-		tmpHist2->Scale( xsection );
-		
-		int nbinsx = tmpHist2->GetNbinsX();
-		
-		for( int j = 1; j < nbinsx; j++ )
-		{
-		
-			x = tmpHist2->GetBinCenter( j );
-			binWidth = tmpHist->GetXaxis()->GetBinWidth( tmpHist->GetXaxis()->FindBin( x ) );
-			
-			val = tmpHist2->GetBinContent( j );
-			
-			tmp = val/( binWidth );
-			
-			tmpHist->Fill( x, tmp );
-	
-		}
-		
-		XHOGENE[i] = tmpHist;
-	}
-	
-	
-	//middle part not modified
-	for( int i = 10; i < 14; i++)
-	{
-		
-		TH1F * tmpHist = (TH1F*) HOGENE[i]->Clone();
-		TH1F * tmpHist2 = (TH1F*) HOGENE[i]->Clone();
-		tmpHist->Reset("ice");
-		tmpHist->GetSumw2()->Set(0);
-		//tmpHist->Sumw2();
-		
-		int nbinsx = tmpHist2->GetNbinsX();
-		
-		for( int j = 1; j < nbinsx; j++ )
-		{
-		
-			x = tmpHist2->GetBinCenter( j );
-			binWidth = tmpHist->GetXaxis()->GetBinWidth( tmpHist->GetXaxis()->FindBin( x ) );
-			
-			val = tmpHist2->GetBinContent( j );
-			
-			tmp = val/( binWidth );
-			
-			tmpHist->Fill( x, tmp );
-	
-		}
-		
-		XHOGENE[i] = tmpHist;
-	}
-	
-	//second set of plots
-	for( int i = 14; i < 17; i++)
-	{
-		
-		TH1F * tmpHist = (TH1F*) HOGENE[i]->Clone();
-		TH1F * tmpHist2 = (TH1F*) HOGENE[i]->Clone();
-		tmpHist->Reset("ice");
-		tmpHist->GetSumw2()->Set(0);
-		
-		//multiply by luminosity
-		tmpHist2->Scale( 1.0/double( Nevents ) );
-		tmpHist2->Scale( xsection );
-		
-		int nbinsx = tmpHist2->GetNbinsX();
-		
-		for( int j = 1; j < nbinsx; j++ )
-		{
-			
-			x = tmpHist2->GetBinCenter( j );
-			binWidth = tmpHist->GetXaxis()->GetBinWidth( tmpHist->GetXaxis()->FindBin( x ) );
-			
-			val = tmpHist2->GetBinContent( j );
-			
-			tmp = val/( binWidth );
-			
-			tmpHist->Fill( x, tmp );
-	
-		}
-		
-		XHOGENE[i] = tmpHist;
-	}
-	
-	
-		XHOGENE[5]->GetXaxis()->SetTitle("#phi_{12} [mrad]");
-		XHOGENE[5]->GetYaxis()->SetTitle("#frac{d#sigma}{d#phi_{12}}[ nbarn / mrad]");
+	XHOGENE[0]->GetXaxis()->SetTitle("#phi_{12} [mrad]");
+	XHOGENE[0]->GetYaxis()->SetTitle("#frac{d#sigma}{d#phi_{12}}[ nbarn / mrad]");
+	XHOGENE[0]->SetName("hXsectionPhi12");	
 
-		XHOGENE[6]->GetXaxis()->SetTitle("t_{1} [GeV^{2}]");
-		XHOGENE[6]->GetYaxis()->SetTitle("#frac{d#sigma}{dt_{1}}[ nbarn / GeV^{2}]");
+	XHOGENE[1]->GetXaxis()->SetTitle("t_{1} [GeV^{2}]");
+	XHOGENE[1]->GetYaxis()->SetTitle("#frac{d#sigma}{dt_{1}}[ nbarn / GeV^{2}]");
+	XHOGENE[1]->SetName("hXsectionT1");	
 
- 		XHOGENE[7]->GetXaxis()->SetTitle("t_{2} [GeV^{2}]");
-		XHOGENE[7]->GetYaxis()->SetTitle("#frac{d#sigma}{dt_{2}}[ nbarn / GeV^{2}]");
+ 	XHOGENE[2]->GetXaxis()->SetTitle("t_{2} [GeV^{2}]");
+	XHOGENE[2]->GetYaxis()->SetTitle("#frac{d#sigma}{dt_{2}}[ nbarn / GeV^{2}]");
+	XHOGENE[2]->SetName("hXsectionT2");	
 
- 		XHOGENE[8]->GetXaxis()->SetTitle("t_{a} [GeV^{2}]");
-		XHOGENE[8]->GetYaxis()->SetTitle("#frac{d#sigma}{dt_{a}}[ nbarn / GeV^{2}]");
+ 	XHOGENE[3]->GetXaxis()->SetTitle("t_{a} [GeV^{2}]");
+	XHOGENE[3]->GetYaxis()->SetTitle("#frac{d#sigma}{dt_{a}}[ nbarn / GeV^{2}]");
+	XHOGENE[3]->SetName("hXsectionTa");	
 		
- 		XHOGENE[9]->GetXaxis()->SetTitle("t_{b} [GeV^{2}]");
-		XHOGENE[9]->GetYaxis()->SetTitle("#frac{d#sigma}{dt_{b}}[ nbarn / GeV^{2}]");
+ 	XHOGENE[4]->GetXaxis()->SetTitle("t_{b} [GeV^{2}]");
+	XHOGENE[4]->GetYaxis()->SetTitle("#frac{d#sigma}{dt_{b}}[ nbarn / GeV^{2}]");
+	XHOGENE[4]->SetName("hXsectionTb");		
 		
- 		XHOGENE[14]->GetXaxis()->SetTitle("x_{F}");
-		XHOGENE[14]->GetYaxis()->SetTitle("#frac{d#sigma}{dx_{F}}");		
+ 	XHOGENE[5]->GetXaxis()->SetTitle("x_{F}");
+	XHOGENE[5]->GetYaxis()->SetTitle("#frac{d#sigma}{dx_{F}}");		
+	XHOGENE[5]->SetName("hXsectionXF");	
 
- 		XHOGENE[15]->GetXaxis()->SetTitle("M}[GeV]");
-		XHOGENE[15]->GetYaxis()->SetTitle("#frac{d#sigma}{dM_{CM}}[ nbarn / GeV]");		
+ 	XHOGENE[6]->GetXaxis()->SetTitle("M[GeV]");
+	XHOGENE[6]->GetYaxis()->SetTitle("#frac{d#sigma}{dM_{CM}}[ nbarn / GeV]");		
+	XHOGENE[6]->SetName("hXsectionCM");	
 		
-		XHOGENE[16]->GetXaxis()->SetTitle("|p_{3t}-p_{4t}| [GeV/c]");
-		XHOGENE[16]->GetYaxis()->SetTitle("#frac{d#sigma}{d|p_{3t}-p_{4t}|}[ nbarn c/ GeV]");		
-
+	XHOGENE[7]->GetXaxis()->SetTitle("|p_{3t}-p_{4t}| [GeV/c]");
+	XHOGENE[7]->GetYaxis()->SetTitle("#frac{d#sigma}{d|p_{3t}-p_{4t}|}[ nbarn c/ GeV]");		
+	XHOGENE[7]->SetName("hXsectionP3mP4");	
+			
 
 	return;
 	

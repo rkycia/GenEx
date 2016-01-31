@@ -10,7 +10,7 @@ Stores 4-momenta of generated particles.
 
 
 ////////////////////////////////////////////////////////////////////////
-TEvent::TEvent(): NIn(2), NOut(4)
+TEvent::TEvent(): eventWeight(-1.0), NIn(2), NOut(4)
 {
 	
 	PDGDatabese = TDatabasePDG::Instance();

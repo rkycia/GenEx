@@ -7,7 +7,7 @@
 ***********************************************************************/
 
 
-#include"TEventMaker2to3.h"
+#include "TEventMaker2to3.h"
 
 ////////////////////////////////////////////////////////////////////////
 
@@ -75,7 +75,7 @@ void TEventMaker2to3::ReadConfigFile( const string & filename )
 	y_max = ConfigReader->GetDoubleValue( "TEventMaker2to3::y_max" ); 
 	weightStrategy = ConfigReader->GetIntValue( "weightStrategy" );	
 	
-	///Reading frame setup
+	//Reading frame setup
 	frameType = ConfigReader->GetIntValue( string("frameType") );
 	idA = ConfigReader->GetIntValue( string("idA") );
 	idB = ConfigReader->GetIntValue( string("idB") );
@@ -200,7 +200,7 @@ int TEventMaker2to3::CalculateKinematics(double p1t, double p2t, double dphi1, d
     TVector2 pp3t = (pp1 + pp2);
     TVector2 pp3=pp3t.Rotate(PI);
 
-    double am3t = sqrt( mass[3] + pp3.Mod2() );
+    double am3t = sqrt( mass[3]*mass[3] + pp3.Mod2() );
 
     double p3_0 = am3t*cosh(y);
     double p3_z = am3t*sinh(y);
@@ -279,6 +279,13 @@ int TEventMaker2to3::CalculateKinematics(double p1t, double p2t, double dphi1, d
     p1.SetXYZT(pp1.X(), pp1.Y(), pp1z[isol], pp10[isol]); 
     p2.SetXYZT(pp2.X(), pp2.Y(), pp2z[isol], pp20[isol]);
 
+
+    //check peripherality
+	if( p1.Z() < 0.0 || p2.Z() > 0.0)
+	{
+		return 8;
+	}
+
 	
 	pf[1]=p1;
 	pf[2]=p2;
@@ -308,7 +315,7 @@ double TEventMaker2to3::SetEvent( int nDim, double *Xarg, TEvent * event )
 
     event->pb[1] = pb1;
     event->pbInfo[1] = PDGDatabese->GetParticle( idA );
-    event->pb[2] = pb1;
+    event->pb[2] = pb2;
     event->pbInfo[2] = PDGDatabese->GetParticle( idB );
     
     for( int i=1; i < nopf+1; i++ )
@@ -332,8 +339,7 @@ double TEventMaker2to3::SetEvent( int nDim, double *Xarg, TEvent * event )
          double jacob3 = jacob_rndm_3/jacobinv_phs;
          
 		 double flux = 2.0*tecm*tecm;
-		 double gev2tomb = 0.3894;
-		 wt = pow(gev2tomb,-3)/flux;
+		 wt = 1.0/flux;
 				
 		 double wt3 = jacob3*norm3*pf[1].Pt()*pf[2].Pt()/pf[1].E()/pf[2].E();
 		 wt *= wt3;

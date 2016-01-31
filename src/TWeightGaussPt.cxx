@@ -55,6 +55,9 @@ void TWeightGaussPt::ReadConfigFile( const string & filename )
 	alpha =  ConfigReader->GetDoubleValue( "GaussPt::Alpha" );
 	norm =  ConfigReader->GetDoubleValue( "GaussPt::Norm" );
 	
+	scalingFactor = ConfigReader->GetDoubleValue( "scalingFactor" );
+	
+	
 	//Log configuration
 	string ConfigLog = ConfigReader->GetStringValue( string("ConfigLogFile") );
 	TLog * ConfigLogger = new TLog();
@@ -68,6 +71,8 @@ void TWeightGaussPt::ReadConfigFile( const string & filename )
 	ConfigLogger->Write() << "nop = " << nop << endl;
 	ConfigLogger->Write() << "GaussPt::Alpha = " << alpha << endl;
 	ConfigLogger->Write() << "GaussPt::Norm = " << norm << endl;
+	
+	ConfigLogger->Write() << "scalingFactor = " << scalingFactor << endl;
 	
 	delete ConfigLogger;
 
@@ -109,6 +114,9 @@ double TWeightGaussPt::GetWeight( TEvent * event, double eventWeight )
 		pf[i] = event->pf[i];
 	
 	double weight = GetWeight( eventWeight );
+	
+	//scale by the user factor
+	weight *= scalingFactor;
 	
 	return( weight );
 		

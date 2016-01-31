@@ -46,6 +46,9 @@ TEventWriter::TEventWriter( TEvent * event )
 	{
 	
 		tree = new TTree("events","Event tree");
+			
+		//integrand value
+		tree->Branch( "eventIntegrandValue", &(eventPointer->eventWeight), "eventIntegrandValue/D" );
 	
 		string basename("");
 		string number(""); 
@@ -79,6 +82,7 @@ TEventWriter::TEventWriter( TEvent * event )
 			//tree->Branch( ( basename + number ).c_str() ,"TParticlePDG ", &(eventObject->pfInfo[i]) );
 		}
 	
+
 	}
 	
 	if( SaveEventDataLHE_TXT )
@@ -207,6 +211,9 @@ void TEventWriter::Fill( void )
 		eventPointer->pf[i].Boost(boost);
 		
 	}
+	
+	eventObject->eventWeight = eventPointer->eventWeight;
+	
 	
 	//fill root tree
 	if( SaveEventDataRoot )
@@ -401,6 +408,15 @@ void TEventWriter::Fill( void )
 		writer->writeEvent();	 
 	 
 		writer->hepeup.clear(); 
+		writer->hepeup.IDUP.clear(); 
+		writer->hepeup.ISTUP.clear(); 
+		writer->hepeup.MOTHUP.clear(); 
+		writer->hepeup.ISTUP.clear(); 
+		writer->hepeup.PUP.clear(); 
+		writer->hepeup.VTIMUP.clear(); 
+		writer->hepeup.SPINUP.clear(); 
+		
+		
 	}
 	
 };

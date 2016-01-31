@@ -65,7 +65,13 @@ public:
     
     /// Beam fourvectors 
     TLorentzVector * pb;
-	
+
+    /// weight for object decay
+    double decaywt;
+
+    /// integral of decay weights (for given mass M)
+    double decaywtInt,decaywtInt1,decaywtInt2,decaywtInt3,decaywtInt4,decaywtIntN; 	
+
 	/// Beam particles PDG info
 	TParticlePDG ** pbInfo;
 	
@@ -75,6 +81,9 @@ public:
     /// Final particles PDG info
     TParticlePDG ** pfInfo;
     
+    /// Event weight
+    /// @warning Default value is -1.0.
+    double eventWeight;
     
     /// List all particles in event
     void PrintParticles();

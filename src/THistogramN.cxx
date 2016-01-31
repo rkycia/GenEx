@@ -84,18 +84,21 @@ void THistogramN::AllocateHistograms( void )
 
   hEtaPhi = new TH2F("EtaPhi3", "Eta vs Phi 1,2,CM", 50,0,0, 50,0,0);
   hEtaPhi->SetBit(TH1::kCanRebin);
-  hEtaPhi->SetXTitle("#eta");
+  //hEtaPhi->SetXTitle("#eta");
+  hEtaPhi->SetXTitle("y");
   hEtaPhi->SetYTitle("#phi"); 
   
   hEtaPhiCentral = new TH2F("EtaPhi1", "Eta vs Phi CM", 50,0,0, 50,0,0);
   hEtaPhiCentral->SetBit(TH1::kCanRebin);
-  hEtaPhiCentral->SetXTitle("#eta");
+  //hEtaPhiCentral->SetXTitle("#eta");
+  hEtaPhiCentral->SetXTitle("y");
   hEtaPhiCentral->SetYTitle("#phi"); 
   
   
   hEtaPhiPP = new TH2F("EtaPhi2", "Eta vs Phi 1 + 2", 50,0,0, 50,0,0);
   hEtaPhiPP->SetBit(TH1::kCanRebin);
-  hEtaPhiPP->SetXTitle("#eta");
+  //hEtaPhiPP->SetXTitle("#eta");
+  hEtaPhiPP->SetXTitle("y");
   hEtaPhiPP->SetYTitle("#phi"); 
   
 };
@@ -206,16 +209,21 @@ void THistogramN::Fill( TEvent * event, double weight  )
 	
     for( int i = 1; i< nop+1; i++ )
     {
-		hEtaPhi->Fill( pf[i].Eta(), pf[i].Phi(), weight);
+		//hEtaPhi->Fill( pf[i].Eta(), pf[i].Phi(), weight);
+		hEtaPhi->Fill( pf[i].Rapidity(), pf[i].Phi(), weight);
 	}
     
     for( int i = 2; i < nop+1; i++ )
     {
-		hEtaPhiCentral->Fill( pf[i].Eta(), pf[i].Phi(), weight);
+		//hEtaPhiCentral->Fill( pf[i].Eta(), pf[i].Phi(), weight);
+		hEtaPhiCentral->Fill( pf[i].Rapidity(), pf[i].Phi(), weight);
 	}
 	
-	hEtaPhiPP->Fill( pf[1].Eta(), pf[1].Phi(), weight);
-	hEtaPhiPP->Fill( pf[2].Eta(), pf[2].Phi(), weight);
+	//hEtaPhiPP->Fill( pf[1].Eta(), pf[1].Phi(), weight);
+	//hEtaPhiPP->Fill( pf[2].Eta(), pf[2].Phi(), weight);
+	
+	hEtaPhiPP->Fill( pf[1].Rapidity(), pf[1].Phi(), weight);
+	hEtaPhiPP->Fill( pf[2].Rapidity(), pf[2].Phi(), weight);
 	
 
 	return;

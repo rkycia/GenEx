@@ -61,6 +61,9 @@ private:
     /// Pi = 3.14...
     static const double PI;    
  
+ 	/// user scaling factor
+	double scalingFactor;
+ 
 	///configuration file reader
 	TConfigReader * ConfigReader;
 
